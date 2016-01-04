@@ -58,10 +58,11 @@ templates/publicPhotos.html
 
 These files will need to be run inside the Vagrant VM provided by Udacity for this project.<br/>
 
-Install Vagrant and Virtualbox. Instructions can be found on the websites as well as the course materials at https://www.udacity.com/wiki/ud088/vagrant<br/>
+Install Vagrant and Virtualbox.<br/>
+Instructions can be found on the websites as well as the course materials at https://www.udacity.com/wiki/ud088/vagrant<br/>
 Clone the fullstack-nanodegree-vm repository. https://github.com/udacity/fullstack-nanodegree-vm <br/>
 There is a catalog folder provided for you, but no files have been included. If a catalog folder does not exist, simply create your own inside of the vagrant folder.<br/>
-Launch the Vagrant VM (by typing vagrant up in the directory fullstack/vagrant from the terminal). You can find further instructions on how to do so here. ttps://www.udacity.com/wiki/ud088/vagrant<br/>
+Launch the Vagrant VM (by typing vagrant up in the directory fullstack/vagrant from the terminal). You can find further instructions on how to do so here. https://www.udacity.com/wiki/ud088/vagrant<br/>
 <br/>
 Copy the files from the repo into the catalog folder<br/>
 Setup the database by typing 'python database_setup.py'<br/>
