@@ -1,0 +1,46 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+	<div class="row divider green">
+		<div class="col-md-12"></div>
+	</div>
+	<div class="row banner category">
+		<div class="col-md-11 col-md-offset-1 padding-none">
+			<h1>New Photo</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6 col-md-offset-1 padding-top">
+			<form action="#" method = "post">
+				<div class="form-group">
+					<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">				
+
+					<label for="name">Name:</label>
+					<input type ="text" maxlength="80" class="form-control" name="name"placeholder="Name of the photo">
+
+					<label for="description">Description:</label>
+					<textarea class="form-control" maxlength="250" rows="3" name="description" placeholder="Description of the photo"></textarea>
+
+					<label for="dateTaken">Date Taken:</label>
+					<input type ="date" class="form-control" name="dateTaken">
+
+					<label for="width">Width:</label>
+					<input type ="text" class="form-control" name="width" placeholder="Width in pixels">
+
+					<label for="height">Height:</label>
+					<input type ="text" class="form-control" name="height" placeholder="Height in pixels">
+
+					<label for="camera">Camera:</label>
+					<input type ="text" class="form-control" name="camera" placeholder="Camera model">
+
+					<label for="mage">Image URL:</label>
+					<input type ="url" class="form-control" name="mage" placeholder="URL to photo">
+
+					<button type="submit" class="btn btn-default" id="submit" type="submit">
+					<span class="glyphicon glyphicon-image" aria-hidden="true"></span>Create</button>
+				</div>
+			</form>
+		</div>
+	</div>
+{% endblock %}
+
