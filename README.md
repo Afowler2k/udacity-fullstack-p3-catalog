@@ -15,12 +15,12 @@ The application is also built to prevent CSRF attacks.
 <H2>Quick start</H2>
 <ul>
 <li>
-<a href="https://github.com/Afowler2k/udacity-fullstack-project3/archive/master.zip">Download the latest release</a>
+<a href="https://github.com/Afowler2k/udacity-fullstack-p3-catalog/archive/master.zip">Download the latest release</a>
 </li>
 <li>
 Clone the repo: 
 <code>
-git clone https://github.com/Afowler2k/udacity-fullstack-project2.git
+git clone https://github.com/Afowler2k/udacity-fullstack-p3-catalog/archive/master.zip
 </code>
 </li>
 </ul>
@@ -30,29 +30,43 @@ git clone https://github.com/Afowler2k/udacity-fullstack-project2.git
 Within the download you'll find the following directories and files.
 <pre>
 <code>
-tournament.sql
-tournament.py
-tournament_test.py
+application.py
+client_secrets.json
+database_setup.py
+fb_clients_secrets.json
+lotsofphotos.py
+README.md
+static/styles.css
+static/top-banner.jpg
+templates/categories.html
+templates/deleteCategory.html
+templates/deletePhoto.html
+templates/editCategory.html
+templates/editPhoto.html
+templates/header.html
+templates/login.html
+templates/main.html
+templates/newCategory.html
+templates/newPhoto.html
+templates/photos.html
+templates/publiccategories.html
+templates/publicPhotos.html
 </code>
 </pre>
 
 <h3>Running the project</h3>
 
 These files will need to be run inside the Vagrant VM provided by Udacity for this project.<br/>
-For additional setup information refer to <a href="https://docs.google.com/document/d/16IgOm4XprTaKxAa8w02y028oBECOoB1EI1ReddADEeY/pub?embedded=true">this document</a></br>
-Once setup, you will need to run the tournament.sql file inside psql to initialize the database.<br/>
-To launch PostgresSQL run:<br/>
-psql<br/>
-This will launch the postgres command line. <br/>
-Now initialize the database by typing:<br/>
-\i tournament.sql<br/>
-\q<br/>
-<br/>
-You will now be back at the command line where you can run the unit tests, type:<br/>
-python tournament_test.py<br/>
-<br/>
-You should see the successful completion on 9 unit tests.<br/>
 
+Install Vagrant and Virtualbox. Instructions can be found on the websites as well as the course materials at https://www.udacity.com/wiki/ud088/vagrant
+Clone the fullstack-nanodegree-vm repository. https://github.com/udacity/fullstack-nanodegree-vm 
+There is a catalog folder provided for you, but no files have been included. If a catalog folder does not exist, simply create your own inside of the vagrant folder.
+Launch the Vagrant VM (by typing vagrant up in the directory fullstack/vagrant from the terminal). You can find further instructions on how to do so here. ttps://www.udacity.com/wiki/ud088/vagrant
 
+Copy the files from the repo into the catalog folder
+Setup the database by typing 'python database_setup.py'
+Populate the database by typing 'python lotsofphotos.py'
+Run the app by typing 'python application.py'
 
+Access the applcation by going to http://localhost:8000 locally on your browser.
 
