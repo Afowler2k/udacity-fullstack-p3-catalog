@@ -67,12 +67,16 @@ Access the applcation by going to http://localhost:8000 locally on your browser.
 
 The application provides several endpoints to retrieve the data in both JSON and XML
 To access the JSON APIs go to:
+
 http://localhost:8000/category/JSON
+
 ```http://localhost:8000/category/<int:category_id>/photos/JSON```
 ```http://localhost:8000/category/<int:category_id>/photo/<int:photo_id>/JSON```
 
 To access the XML APIs go to:
+
 http://localhost:8000/category/XML
+
 ```http://localhost:8000/category/<int:category_id>/photos/XML```
 ```http://localhost:8000/category/<int:category_id>/photo/<int:photo_id>/XML```
 
