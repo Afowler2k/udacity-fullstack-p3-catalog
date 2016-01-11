@@ -1,0 +1,222 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "name": "City & Architecture",
+      "Photos": [
+        {
+          "camera": "D800",
+          "dateTaken": "2015-10-07",
+          "description": "John Hancock Tower, Chicago caught at sunset on a cloudy day.",
+          "height": 6132,
+          "id": 1,
+          "image": "https://drscdn.500px.org/photo/124381695/m%3D900/657602e4ceb6922a67fae5305fea8f1e",
+          "name": "Sunset Hancock",
+          "width": 4906
+        },
+        {
+          "camera": "D800",
+          "dateTaken": "2015-11-02",
+          "description": "November sunrise over Chicago skyline, catching shadows falling off the buildings and the church.",
+          "height": 3680,
+          "id": 2,
+          "image": "https://drscdn.500px.org/photo/127741419/m%3D900/b73bb89a63c07ad64a9701a24469c05f",
+          "name": "Shadow of the Sun",
+          "width": 7360
+        },
+        {
+          "camera": "D800",
+          "dateTaken": "2015-08-24",
+          "description": "Urban Living",
+          "height": 2646,
+          "id": 3,
+          "image": "https://drscdn.500px.org/photo/119428413/m%3D900/0bf4289d2c20e53ec1bacd9befaf0b06",
+          "name": "Urban Life",
+          "width": 2117
+        },
+        {
+          "camera": "D800",
+          "dateTaken": "2015-08-23",
+          "description": "Beauty can come from many things including the coldness of concrete and steel.",
+          "height": 4729,
+          "id": 4,
+          "image": "https://drscdn.500px.org/photo/119316311/m%3D900/df51a89db77b7596db19c7f2c8547349",
+          "name": "Concrete & Steel",
+          "width": 7086
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Weather",
+      "Photos": [
+        {
+          "camera": "D800",
+          "dateTaken": "2015-12-04",
+          "description": "Chicago being swallowed by fog during sunrise.",
+          "height": 3680,
+          "id": 5,
+          "image": "https://drscdn.500px.org/photo/131222839/m%3D900/06d783156014dc148b4f314aa39c47d8",
+          "name": "Disappearing City",
+          "width": 7360
+        },
+        {
+          "camera": "D800",
+          "dateTaken": "2015-02-26",
+          "description": "Huge ice formations along Lake Michigan.",
+          "height": 4912,
+          "id": 6,
+          "image": "https://drscdn.500px.org/photo/100224451/m%3D900/707417090237c4f810da7a2c474eae08",
+          "name": "Ice Monsters",
+          "width": 7360
+        },
+        {
+          "camera": "D800",
+          "dateTaken": "2013-09-18",
+          "description": "Chicago Storm",
+          "height": 2173,
+          "id": 7,
+          "image": "https://drscdn.500px.org/photo/46843664/m%3D900/154c5778c3471d28c8fb22cf1279829e",
+          "name": "Strike!",
+          "width": 3281
+        },
+        {
+          "camera": "D800",
+          "dateTaken": "2014-01-07",
+          "description": "Navy Pier behind the steam of Lake Michigan during the Polar Vortex over Chicago",
+          "height": 2669,
+          "id": 8,
+          "image": "https://drscdn.500px.org/photo/57334470/m%3D900/1a94f64242fe9c924cef2d29806c081d",
+          "name": "Navy Pier Chicago",
+          "width": 7211
+        }
+      ]      
+    },
+    {
+      "id": 3,
+      "name": "Black & White",
+      "Photos": [
+        {
+          "camera": "D800",
+          "dateTaken": "2015-02-11",
+          "description": "Chicago EL in winter.",
+          "height": 4134,
+          "id": 9,
+          "image": "https://drscdn.500px.org/photo/98642457/m%3D900/f3f62b51eca45d9324152e9bf8dabd51",
+          "name": "Look Down",
+          "width": 4134
+        },
+        {
+          "camera": "D800",
+          "dateTaken": "2015-01-07",
+          "description": "Snow falls during winter commute.",
+          "height": 3494,
+          "id": 10,
+          "image": "https://drscdn.500px.org/photo/95627701/m%3D900/d3f650e5400f534b52f88a48efbb08ff",
+          "name": "Cold Commute",
+          "width": 5235
+        },
+        {
+          "camera": "D800",
+          "dateTaken": "2014-07-25",
+          "description": "Couple in love holding hands",
+          "height": 4912,
+          "id": 11,
+          "image": "https://drscdn.500px.org/photo/77696281/m%3D900/dc0281ac130654873cfa198096636f64",
+          "name": "Only You",
+          "width": 7360
+        },
+        {
+          "camera": "D800",
+          "dateTaken": "2014-05-13",
+          "description": "Sunday afternoon in Olive Park enjoying Chicago skyline",
+          "height": 4912,
+          "id": 12,
+          "image": "https://drscdn.500px.org/photo/70416921/m%3D900/dda577d2b72ab0787e324676805ea568",
+          "name": "Park Bench",
+          "width": 7360
+        }
+      ]      
+    },
+    {
+      "id": 4,
+      "name": "Abstract",
+      "Photos": [
+        {
+          "camera": "",
+          "dateTaken": "2015-12-30",
+          "description": "Paraigues i Orbe",
+          "height": 2524,
+          "id": 13,
+          "image": "https://drscdn.500px.org/photo/134078971/m%3D900/64af3c1f475b0f033a2ca3a434a0e723",
+          "name": "Umbrella & Orb",
+          "width": 3000
+        }
+      ]      
+    },
+    {
+      "id": 5,
+      "name": "People",
+      "Photos": [
+        {
+          "camera": "",
+          "dateTaken": "2015-12-30",
+          "description": "Model: Kseniya Voronovich | Ambient light | Minsk, Belarus.",
+          "height": 794,
+          "id": 14,
+          "image": "https://drscdn.500px.org/photo/134033395/m%3D900/bf8c80386099d26e4ebd3e24c32ed1c7",
+          "name": "Keine sonne die mir scheint",
+          "width": 1400
+        }
+      ]      
+    },
+    {
+      "id": 6,
+      "name": "Nature",
+      "Photos": [
+        {
+          "camera": "",
+          "dateTaken": "2015-12-29",
+          "description": "This resident yellow warbler is one of the many highlights of this years travels",
+          "height": 900,
+          "id": 15,
+          "image": "https://drscdn.500px.org/photo/134006773/m%3D900/deca405ed0aa1bf26e67517f63b78044",
+          "name": "Yellow Warbler .....",
+          "width": 665
+        }
+      ]      
+    },
+    {
+      "id": 7,
+      "name": "Sport",
+      "Photos": [
+        {
+          "camera": "",
+          "dateTaken": "2015-12-20",
+          "description": "",
+          "height": 4096,
+          "id": 16,
+          "image": "https://drscdn.500px.org/photo/134059963/m%3D900/76c154c159dd4547631497b681d2ab6c",
+          "name": "Race of Christmas in Jarama (Madrid)",
+          "width": 6132
+        }
+      ]      
+    },
+    {
+      "id": 8,
+      "name": "Animals",
+      "Photos": [
+        {
+          "camera": "D4S",
+          "dateTaken": "2015-12-25",
+          "description": "Snow Leopard Portrait",
+          "height": 4096,
+          "id": 17,
+          "image": "https://drscdn.500px.org/photo/134024085/m%3D900/83d909b932fc176bb72efa9934260656",
+          "name": "Snow Leopard Portrait",
+          "width": 6132
+        }
+      ]      
+    }
+  ]
+}

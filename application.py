@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
+from functools import wraps
+from flask import Flask, render_template, request
+from flask import redirect, jsonify, url_for, flash
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, Photo, User
@@ -31,24 +33,32 @@ engine = create_engine('sqlite:///photogallery.db')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
-session = DBSession() 
+session = DBSession()
 
 
 # Create route for the login page then
-# create an anti-forgery state token, a random string of 32 chars of uppercase and digits
-# store it in the state data of login_session
-# render the login page and pass the state string to use when authenticating against the OAuth servers
+# create an anti-forgery state token, a random string of 32 chars of uppercase
+# and digits # store it in the state data of login_session
+# render the login page and pass the state string to use when authenticating
+# against the OAuth servers
 @app.route('/login')
 def showLogin():
+    """
+    showLogin : Display the login page
+    """     
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     login_session['state'] = state
     return render_template('login.html', STATE=state)
 
+
 # server side google sign in implementation
 @csrf.exempt
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
+    """
+    gconnect : Signin user using Google
+    """   
     # Validate state token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -56,7 +66,6 @@ def gconnect():
         return response
     # Obtain authorization code
     code = request.data
-
     try:
         # Upgrade the authorization code into a credentials object
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
@@ -98,8 +107,9 @@ def gconnect():
     stored_credentials = login_session.get('credentials')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_credentials is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
-                                 200)
+        response = make_response(
+                        json.dumps('Current user is already connected.'),
+                        200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -125,17 +135,18 @@ def gconnect():
     if not user_id:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
-     
+
     output = ''
     output += '<h1>Welcome, '
     output += login_session['username']
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    
+    output += ' " style = "width: 300px; height: 300px;border-radius: '
+    output += '150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;">'
+
     flash("you are now logged in as %s" % login_session['username'])
-    
+
     return output
 
 
@@ -143,6 +154,9 @@ def gconnect():
 # DISCONNECT - Revoke a current user's token and reset their login_session
 @app.route('/gdisconnect')
 def gdisconnect():
+    """
+    gdisconnect : Disconnect user from Google
+    """      
     # Only disconnect a connected user.
     credentials = login_session.get('credentials')
     if credentials is None:
@@ -161,10 +175,14 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
+
 # server side facebook sign in implementation
 @csrf.exempt
 @app.route('/fbconnect', methods=['POST'])
 def fbconnect():
+    """
+    fbconnect : Signin user using Facebook
+    """    
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
@@ -176,8 +194,7 @@ def fbconnect():
         'web']['app_id']
     app_secret = json.loads(
         open('fb_client_secrets.json', 'r').read())['web']['app_secret']
-    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (
-        app_id, app_secret, access_token)
+    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (app_id, app_secret, access_token)  # noqa
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
 
@@ -185,7 +202,6 @@ def fbconnect():
     userinfo_url = "https://graph.facebook.com/v2.4/me"
     # strip expire tag from access token
     token = result.split("&")[0]
-
 
     url = 'https://graph.facebook.com/v2.4/me?%s&fields=name,id,email' % token
     h = httplib2.Http()
@@ -197,12 +213,14 @@ def fbconnect():
     login_session['email'] = data["email"]
     login_session['facebook_id'] = data["id"]
 
-    # The token must be stored in the login_session in order to properly logout, let's strip out the information before the equals sign in our token
+    # The token must be stored in the login_session in order to properly
+    # logout, let's strip out the information before the equals sign
+    # in our token
     stored_token = token.split("=")[1]
     login_session['access_token'] = stored_token
 
     # Get user picture
-    url = 'https://graph.facebook.com/v2.4/me/picture?%s&redirect=0&height=200&width=200' % token
+    url = 'https://graph.facebook.com/v2.4/me/picture?%s&redirect=0&height=200&width=200' % token  # noqa
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
     data = json.loads(result)
@@ -222,19 +240,23 @@ def fbconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '  # noqa
 
     flash("Now logged in as %s" % login_session['username'])
     return output
+
 
 # Handle Facebook logout
 # DISCONNECT - Revoke a current user's token and reset their login_session
 @app.route('/fbdisconnect')
 def fbdisconnect():
+    """
+    fbdisconnect : Disconnect user from Facebook
+    """   
     facebook_id = login_session['facebook_id']
     # The access token must me included to successfully logout
     access_token = login_session['access_token']
-    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id,access_token)
+    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id, access_token)  # noqa
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     return "you have been logged out"
@@ -243,6 +265,9 @@ def fbdisconnect():
 # Disconnect based on provider and redirect to main page
 @app.route('/disconnect')
 def disconnect():
+    """
+    disconnect : Disconnect user based on provider
+    """ 
     if 'provider' in login_session:
         if login_session['provider'] == 'google':
             gdisconnect()
@@ -262,23 +287,40 @@ def disconnect():
         flash("You were not logged in")
         return redirect(url_for('showCategories'))
 
-# Show all categories, if not logged in, only show the public page otherwise show the page with CRUD functionality
+
+# Show all categories, if not logged in, only show the public page otherwise
+# show the page with CRUD functionality
 @app.route('/')
 @app.route('/category/')
 def showCategories():
+    """
+    showCategories : Display all the categories
+    """ 
     categories = session.query(Category).order_by(asc(Category.name))
-    if  'username' not in login_session:
-      return render_template('publiccategories.html', categories=categories)
+    if 'username' not in login_session:
+        return render_template('publicCategories.html', categories=categories)
     else:
-      return render_template('categories.html', categories=categories)
+        return render_template('categories.html', categories=categories)
+
+# decorator to enforce login
+def login_required(f):
+  @wraps(f)
+  def decorated_function(*args, **kwargs):
+    if 'username' not in login_session:
+      return redirect('login')  
+    return f(*args, **kwargs)
+  return decorated_function  
 
 # Create a new category, and flash a message that it was created
 @app.route('/category/new/', methods=['GET', 'POST'])
+@login_required
 def newCategory():
-    if 'username' not in login_session:
-      return redirect('login')
+    """
+    newCategory : Create a new category
+    """ 
     if request.method == 'POST':
-        newCategory = Category(name=request.form['name'], user_id=login_session['user_id'])
+        newCategory = Category(name=request.form['name'],
+                               user_id=login_session['user_id'])
 
         session.add(newCategory)
         flash('New Category %s Successfully Created' % newCategory.name)
@@ -287,11 +329,16 @@ def newCategory():
     else:
         return render_template('newCategory.html')
 
+
 # Edit a category
 @app.route('/category/<int:category_id>/edit/', methods=['GET', 'POST'])
+@login_required
 def editCategory(category_id):
-    if 'username' not in login_session:
-      return redirect('/login')
+    """
+    editCategory : Edit a category
+    Args:
+      category_id (int): unique id of the category
+    """
     editedCategory = session.query(Category).filter_by(id=category_id).one()
     if request.method == 'POST':
         if request.form['name']:
@@ -301,58 +348,81 @@ def editCategory(category_id):
     else:
         return render_template('editCategory.html', category=editedCategory)
 
+
 # Delete a category
 @app.route('/category/<int:category_id>/delete/', methods=['GET', 'POST'])
+@login_required
 def deleteCategory(category_id):
-    if 'username' not in login_session:
-      return redirect('login')
- 
+    """
+    deleteCategory : Delete a category
+    Args:
+      category_id (int): unique id of the category
+    """  
     categoryToDelete = session.query(Category).filter_by(id=category_id).one()
     if categoryToDelete.user_id != login_session['user_id']:
-      return "<script>function myFunction() {alert('You are not authorized to delete this category. Please create your own category in order to delete.';}</script><body onload='myFunction()'' />"
+        return "<script>function myFunction() { \
+              alert('You are not authorized " \
+              "to delete this category. Please create your own category in " \
+              "order to delete.';}</script><body onload='myFunction()'' />"
     if request.method == 'POST':
         session.delete(categoryToDelete)
         flash('%s Successfully Deleted' % categoryToDelete.name)
         session.commit()
         return redirect(url_for('showCategories'))
     else:
-        return render_template('deleteCategory.html', category=categoryToDelete)
+        return render_template('deleteCategory.html',
+                               category=categoryToDelete)
+
 
 # Show photos for category
 @app.route('/category/<int:category_id>/')
 @app.route('/category/<int:category_id>/photos/')
 def showPhotos(category_id):
+    """
+    showPhotos : Show all the photos for a category
+    Args:
+      category_id (int): unique id of the category
+    """    
     category = session.query(Category).filter_by(id=category_id).one()
     creator = getUserInfo(category.user_id)
     photos = session.query(Photo).filter_by(category_id=category_id).all()
-    if 'username' not in login_session or creator.id != login_session['user_id']:
-      return render_template('publicPhotos.html', photos = photos, category=category, creator=creator)
+    if ('username' not in login_session or
+          creator.id != login_session['user_id']):
+        return render_template('publicPhotos.html', photos=photos,
+                                                    category=category,
+                                                    creator=creator)
     else:
-      return render_template('photos.html', photos=photos, category=category, creator=creator)
+        return render_template('photos.html', photos=photos,
+                                              category=category,
+                                              creator=creator)
+
 
 # Create a new photo
 @app.route('/category/<int:category_id>/photo/new/', methods=['GET', 'POST'])
+@login_required
 def newPhoto(category_id):
-    if 'username' not in login_session:
-      return redirect('login')
- 
+    """
+    newPhoto : Create a new photo for a category
+    Args:
+      category_id (int): unique id of the category
+    """      
     category = session.query(Category).filter_by(id=category_id).one()
     if request.method == 'POST':
         # use default date of today if none entered
-        dateTaken = request.form.get('dateTaken', "");
+        dateTaken = request.form.get('dateTaken', "")
         if dateTaken == "":
             dateTaken = datetime.now()
         else:
             dateTaken = datetime.strptime(dateTaken, "%Y-%M-%d")
 
         # create new photo with default values if any are missing
-        newPhoto = Photo(name=request.form.get('name', ""), 
-                         description=request.form.get('description', ""), 
+        newPhoto = Photo(name=request.form.get('name', ""),
+                         description=request.form.get('description', ""),
                          dateTaken=dateTaken,
-                         width=request.form.get('width', 0, type=int), 
-                         height=request.form.get('height', 0, type=int), 
-                         camera=request.form.get('camera', ""), 
-                         image=request.form.get('image', ""), 
+                         width=request.form.get('width', 0, type=int),
+                         height=request.form.get('height', 0, type=int),
+                         camera=request.form.get('camera', ""),
+                         image=request.form.get('image', ""),
                          category_id=category_id,
                          user_id=category.user_id)
         session.add(newPhoto)
@@ -360,45 +430,61 @@ def newPhoto(category_id):
         flash('New Photo %s Successfully Created' % (newPhoto.name))
         return redirect(url_for('showPhotos', category_id=category_id))
     else:
-        return render_template('newphoto.html', category_id=category_id)
+        return render_template('newPhoto.html', category_id=category_id)
+
 
 # Edit a photo
-@app.route('/category/<int:category_id>/photo/<int:photo_id>/edit', methods=['GET', 'POST'])
+@app.route('/category/<int:category_id>/photo/<int:photo_id>/edit',
+            methods=['GET', 'POST'])
+@login_required
 def editPhoto(category_id, photo_id):
-    if 'username' not in login_session:
-      return redirect('login')
-
+    """
+    editPhoto : Edit a photo in a category
+    Args:
+      category_id (int): unique id of the category
+      photo_id (int): unique id of the photo
+    """      
     editedPhoto = session.query(Photo).filter_by(id=photo_id).one()
     category = session.query(Category).filter_by(id=category_id).one()
     if request.method == 'POST':
-        if request.form.has_key('name'):
+        if 'name' in request.form:
             editedPhoto.name = request.form['name']
-        if request.form.has_key('description'):
+        if 'description' in request.form:
             editedPhoto.description = request.form['description']
         # convert the date string from form to Python date object
-        if request.form.has_key('dateTaken'):
-            editedPhoto.dateTaken = datetime.strptime(request.form['dateTaken'], "%Y-%M-%d")
-        if request.form.has_key('width'):
+        if 'dateTaken' in request.form:
+            editedPhoto.dateTaken = datetime.strptime(
+                                                request.form['dateTaken'],
+                                                "%Y-%M-%d")
+        if 'width' in request.form:
             editedPhoto.width = request.form['width']
-        if request.form.has_key('height'):
+        if 'height' in request.form:
             editedPhoto.height = request.form['height']
-        if request.form.has_key('camera'):
+        if 'camera' in request.form:
             editedPhoto.camera = request.form['camera']
-        if request.form.has_key('image'):
+        if 'image' in request.form:
             editedPhoto.image = request.form['image']
         session.add(editedPhoto)
         session.commit()
         flash('Photo Successfully Edited')
         return redirect(url_for('showPhotos', category_id=category_id))
     else:
-        return render_template('editPhoto.html', category_id=category_id, photo_id=photo_id, photo=editedPhoto)
+        return render_template('editPhoto.html', category_id=category_id,
+                                                 photo_id=photo_id,
+                                                 photo=editedPhoto)
+
 
 # Delete a photo
-@app.route('/category/<int:category_id>/photo/<int:photo_id>/delete', methods=['GET', 'POST'])
+@app.route('/category/<int:category_id>/photo/<int:photo_id>/delete',
+            methods=['GET', 'POST'])
+@login_required
 def deletePhoto(category_id, photo_id):
-    if 'username' not in login_session:
-      return redirect('login')
- 
+    """
+    deletePhoto : Delete a photo in a category
+    Args:
+      category_id (int): unique id of the category
+      photo_id (int): unique id of the photo
+    """    
     category = session.query(Category).filter_by(id=category_id).one()
     photoToDelete = session.query(Photo).filter_by(id=photo_id).one()
     if request.method == 'POST':
@@ -407,29 +493,47 @@ def deletePhoto(category_id, photo_id):
         flash('Photo Successfully Deleted')
         return redirect(url_for('showPhotos', category_id=category_id))
     else:
-        return render_template('deletePhoto.html', photo=photoToDelete, category=category)
+        return render_template('deletePhoto.html', photo=photoToDelete,
+                                                   category=category)
+
 
 # JSON API to view all categories
 @app.route('/category/JSON')
-def categories():
+def categoriesJSON():
+    """
+    categoriesJSON : Return JSON reqpresentation of all categories
+    """   
     categories = session.query(Category).all()
     return jsonify(categories=[r.serialize for r in categories])
+
 
 # JSON API to view photos for a category
 @app.route('/category/<int:category_id>/photos/JSON')
 def photosJSON(category_id):
+    """
+    photosJSON : Return JSON reqpresentation of a category
+    Args:
+      category_id (int): unique id of the category
+    """    
     category = session.query(Category).filter_by(id=category_id).one()
     photos = session.query(Photo).filter_by(category_id=category_id).all()
     return jsonify(Photos=[i.serialize for i in photos])
 
+
 # JSON API to view Photo information
 @app.route('/category/<int:category_id>/photo/<int:photo_id>/JSON')
-def photoSON(category_id, photo_id):
+def photoJSON(category_id, photo_id):
+    """
+    photoJSON : Return JSON reqpresentation of a photo in a category
+    Args:
+      category_id (int): unique id of the category
+      photo_id (int): unique id of the photo      
+    """    
     photo = session.query(Photo).filter_by(id=photo_id).one()
     return jsonify(Photo=photo.serialize)
 
 
-# Return a user friendly pretty-printed XML 
+# Return a user friendly pretty-printed XML
 def prettify(elem):
     """Return a pretty-printed XML string for the Element.
     """
@@ -437,7 +541,9 @@ def prettify(elem):
     reparsed = minidom.parseString(rough_string)
     return reparsed.toprettyxml(indent="  ")
 
-# Return a user friendly pretty-printed XML list with parent node named outerName, and with the list of elements
+
+# Return a user friendly pretty-printed XML list with parent node named
+# outerName, and with the list of elements
 def xmlify(outerName, elemList):
     """Return a pretty-printed XML string for the Element.
     """
@@ -447,46 +553,79 @@ def xmlify(outerName, elemList):
 
     return prettify(top)
 
-# XM: API to view all categories
+
+# XML API to view all categories
 @app.route('/category/XML')
 def categoriesXML():
     categories = session.query(Category).all()
     return xmlify("categories", [r.serializeXML for r in categories])
 
+
 # XML API to view photos for a category
 @app.route('/category/<int:category_id>/photos/XML')
 def photosXML(category_id):
+    """
+    photosXML : Return XNL reqpresentation of a category
+    Args:
+      category_id (int): unique id of the category
+    """  
     category = session.query(Category).filter_by(id=category_id).one()
     photos = session.query(Photo).filter_by(category_id=category_id).all()
     return xmlify("photos", [r.serializeXML for r in photos])
 
-#XML API to view Photo information
+
+# XML API to view Photo information
 @app.route('/category/<int:category_id>/photo/<int:photo_id>/XML')
 def photoXML(category_id, photo_id):
+    """
+    photoXML : Return XML reqpresentation of a photo in a category
+    Args:
+      category_id (int): unique id of the category
+      photo_id (int): unique id of the photo      
+    """    
     photo = session.query(Photo).filter_by(id=photo_id).one()
     return prettify(photo.serializeXML)
 
+
 # Create a new user
 def createUser(login_session):
-  newUser = User(name = login_session['username'], email=login_session['email'], picture=login_session['picture'])
-  session.add(newUser)
-  session.commit()
-  user = session.query(User).filter_by(email=login_session['email']).one()
-  return user.id
+    """
+    createUser : Create a new user from session 
+    Args:
+      login_session (dict): session dictionary
+    """   
+    newUser = User(name=login_session['username'],
+                   email=login_session['email'],
+                   picture=login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id
+
 
 # Get a user from user_id
 def getUserInfo(user_id):
-  user = session.query(User).filter_by(id=user_id).one()
-  return user
+    """
+    getUserInfo : Get user info for a user id
+    Args:
+      user_id (int): user id
+    """   
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
 
 # get a user from email address
 def getUserID(email):
-  try:
-    user = session.query(User).filter_by(email=email).one()
-    return user.id
-  except:
-    return None
-
+    """
+    getUserID : Get user info from an email address
+    Args:
+      email (string): user's email address
+    """   
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'

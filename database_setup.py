@@ -31,7 +31,7 @@ class Category(Base):
            'id'           : self.id,
        }
  
-    #Convert object to XML
+    # Convert object to XML
     @property
     def serializeXML(self):
       """Return object in XML format"""
@@ -45,10 +45,15 @@ class Category(Base):
 
       return category
 
+    # Convert JSON to Category
+    @classmethod
+    def JSON_decoder(cls, obj):
+      return cls(name=obj['name'])
+
 class Photo(Base):
     __tablename__ = 'photo'
 
-    name =Column(String(80), nullable = False)
+    name = Column(String(80), nullable = False)
     id = Column(Integer, primary_key = True)
     description = Column(String(250))
     dateTaken = Column(Date, default=datetime.datetime.now())
@@ -75,7 +80,7 @@ class Photo(Base):
            'image'        : self.image
        }
 
-    #Convert object to XML
+    # Convert object to XML
     @property
     def serializeXML(self):
       """Return object in XML format"""
@@ -106,6 +111,19 @@ class Photo(Base):
       image.text = self.image
 
       return photo
+
+    # Convert JSON to Photo
+    @classmethod
+    def JSON_decoder(cls, obj):
+      return cls(name=obj['name'], 
+                   description=obj['description'],
+                   dateTaken=datetime.datetime.strptime(
+                                    obj['dateTaken'],"%Y-%M-%d"),
+                   width=int(obj['width']),
+                   height=int(obj['height']),
+                   camera=obj['camera'],
+                   image=obj['image']
+                   )
 
 engine = create_engine('sqlite:///photogallery.db')
 Base.metadata.create_all(engine)

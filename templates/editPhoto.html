@@ -16,7 +16,7 @@
 					<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">				
 
 					<label for="name">Name:</label>
-					<input type ="text" maxlength="100" class="form-control" name="name" value="{{photo.name }}">
+					<input type ="text" maxlength="100" class="form-control" name="name" value="{{photo.name }}" required>
 
 					<label for="description">Description:</label>
 					<textarea class="form-control" maxlength="250" rows="3" name="description">{{photo.description}}</textarea>
