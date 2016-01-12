@@ -339,7 +339,7 @@ def editCategory(category_id):
     Args:
       category_id (int): unique id of the category
     """
-    editedCategory = session.query(Category).filter_by(id=category_id).one()
+    editedCategory = session.query(Category).get(category_id)
     if request.method == 'POST':
         if request.form['name']:
             editedCategory.name = request.form['name']
@@ -358,7 +358,7 @@ def deleteCategory(category_id):
     Args:
       category_id (int): unique id of the category
     """  
-    categoryToDelete = session.query(Category).filter_by(id=category_id).one()
+    categoryToDelete = session.query(Category).get(category_id)
     if categoryToDelete.user_id != login_session['user_id']:
         return "<script>function myFunction() { \
               alert('You are not authorized " \
@@ -383,9 +383,10 @@ def showPhotos(category_id):
     Args:
       category_id (int): unique id of the category
     """    
-    category = session.query(Category).filter_by(id=category_id).one()
+    category = session.query(Category).get(category_id)
     creator = getUserInfo(category.user_id)
-    photos = session.query(Photo).filter_by(category_id=category_id).all()
+    #photos = session.query(Photo).filter_by(category_id=category_id).all()
+    photos = category.photos
     if ('username' not in login_session or
           creator.id != login_session['user_id']):
         return render_template('publicPhotos.html', photos=photos,
@@ -406,7 +407,7 @@ def newPhoto(category_id):
     Args:
       category_id (int): unique id of the category
     """      
-    category = session.query(Category).filter_by(id=category_id).one()
+    category = session.query(Category).get(category_id)
     if request.method == 'POST':
         # use default date of today if none entered
         dateTaken = request.form.get('dateTaken', "")
@@ -444,8 +445,8 @@ def editPhoto(category_id, photo_id):
       category_id (int): unique id of the category
       photo_id (int): unique id of the photo
     """      
-    editedPhoto = session.query(Photo).filter_by(id=photo_id).one()
-    category = session.query(Category).filter_by(id=category_id).one()
+    editedPhoto = session.query(Photo).get(photo_id)
+    category = session.query(Category).get(category_id)
     if request.method == 'POST':
         if 'name' in request.form:
             editedPhoto.name = request.form['name']
@@ -485,8 +486,8 @@ def deletePhoto(category_id, photo_id):
       category_id (int): unique id of the category
       photo_id (int): unique id of the photo
     """    
-    category = session.query(Category).filter_by(id=category_id).one()
-    photoToDelete = session.query(Photo).filter_by(id=photo_id).one()
+    category = session.query(Category).get(category_id)
+    photoToDelete = session.query(Photo).get(photo_id)
     if request.method == 'POST':
         session.delete(photoToDelete)
         session.commit()
@@ -515,8 +516,9 @@ def photosJSON(category_id):
     Args:
       category_id (int): unique id of the category
     """    
-    category = session.query(Category).filter_by(id=category_id).one()
-    photos = session.query(Photo).filter_by(category_id=category_id).all()
+    category = session.query(Category).get(category_id)
+    #photos = session.query(Photo).filter_by(category_id=category_id).all()
+    photos = category.photos
     return jsonify(Photos=[i.serialize for i in photos])
 
 
@@ -529,7 +531,7 @@ def photoJSON(category_id, photo_id):
       category_id (int): unique id of the category
       photo_id (int): unique id of the photo      
     """    
-    photo = session.query(Photo).filter_by(id=photo_id).one()
+    photo = session.query(Photo).get(photo_id)
     return jsonify(Photo=photo.serialize)
 
 
@@ -558,7 +560,7 @@ def xmlify(outerName, elemList):
 @app.route('/category/XML')
 def categoriesXML():
     categories = session.query(Category).all()
-    return xmlify("categories", [r.serializeXML for r in categories])
+    return app.response_class(xmlify("categories", [r.serializeXML for r in categories]), mimetype='application/xml')
 
 
 # XML API to view photos for a category
@@ -569,9 +571,10 @@ def photosXML(category_id):
     Args:
       category_id (int): unique id of the category
     """  
-    category = session.query(Category).filter_by(id=category_id).one()
-    photos = session.query(Photo).filter_by(category_id=category_id).all()
-    return xmlify("photos", [r.serializeXML for r in photos])
+    category = session.query(Category).get(category_id)
+    #photos = session.query(Photo).filter_by(category_id=category_id).all()
+    photos = category.photos
+    return app.response_class(xmlify("photos", [r.serializeXML for r in photos]), mimetype='application/xml')
 
 
 # XML API to view Photo information
@@ -583,8 +586,8 @@ def photoXML(category_id, photo_id):
       category_id (int): unique id of the category
       photo_id (int): unique id of the photo      
     """    
-    photo = session.query(Photo).filter_by(id=photo_id).one()
-    return prettify(photo.serializeXML)
+    photo = session.query(Photo).get(photo_id)
+    return app.response_class(prettify(photo.serializeXML), mimetype='application/xml')
 
 
 # Create a new user
@@ -610,7 +613,7 @@ def getUserInfo(user_id):
     Args:
       user_id (int): user id
     """   
-    user = session.query(User).filter_by(id=user_id).one()
+    user = session.query(User).get(user_id)
     return user
 
 
